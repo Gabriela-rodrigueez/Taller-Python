@@ -1,5 +1,6 @@
 import turtle
 import time
+import random
 
 # configuracionde la pantalla
 pantalla= turtle.Screen()
@@ -37,7 +38,7 @@ borde.speed(-10) #movimiento (rapido)
 borde.color("purple")
 borde.pensize(11)
 borde.penup() #mover el curson sin dibujar al hacerlo
-borde.goto(-339, 285)
+borde.goto(-295, 295)
 # borde.goto(-250, -250)
 borde.pendown()
 
@@ -46,8 +47,9 @@ borde.pendown()
 #     borde.right(90)
 #     borde.forward(563)
 #     borde.right(90)
-for limite in range (2):
-    borde.forward(500)
+
+for limite in range (4):
+    borde.forward(582)
     borde.right(90)
 borde.hideturtle()
 
@@ -61,15 +63,13 @@ vibora.goto(0,0)
 vibora.direction = "stop"
 
 
-
-
 # cuerpo vibora
 segmentos = []
 
 for i in range (3):
     nuevo_segmento=turtle.Turtle()
     nuevo_segmento.speed(0) #movimiento (rapido)
-    nuevo_segmento.shape("circle") #forma a la serpiente ("circle","triangle","arrow","turtle","classic","square")
+    nuevo_segmento.shape("square") #forma a la serpiente ("circle","triangle","arrow","turtle","classic","square")
     nuevo_segmento.color(color_serpiente)
     nuevo_segmento.penup() #mover el curson sin dibujar al hacerlo
     nuevo_segmento.goto(-20 * (i+1), 0)
@@ -103,6 +103,7 @@ def mover():
         y = vibora.ycor()
         segmentos[0].goto(x,y)
 
+
 #funciones para cambiar la direccion 
 def arriba():
     if vibora.direction != "down":
@@ -125,12 +126,80 @@ pantalla.onkeypress(abajo,"Down")
 pantalla.onkeypress(izquierda,"Left")
 pantalla.onkeypress(derecha,"Right")
 
+
+# comida
+comida=turtle.Turtle()
+comida.speed(0) 
+comida.shape("circle") 
+comida.color("red")
+comida.penup()
+comida.goto(0,200)
+
+
+# puntaje
+puntaje=0
+puntajeMaximo=0
+nivel=1
+velocidad = 0.1
+
+
+# Mostrar puntaje y el nombre del jugador
+texto=turtle.Turtle()
+texto.speed(0)
+texto.color("white")
+texto.penup() 
+texto.hideturtle()
+texto.goto(0,250)
+texto.write(f"Jugador: {jugador_nom}      Puntaje: {puntaje}      Puntaje Maximo: {puntajeMaximo}     Nivel: {nivel}", align="center", font=("Calibri",13, "normal"))
+
+
+# funcion para actualizar el puntaje en la pantalla
+def actualizar_puntaje():
+    texto.clear()
+    texto.write(f"Jugador: {jugador_nom}      Puntaje: {puntaje}      Puntaje Maximo: {puntajeMaximo}     Nivel: {nivel}", align="center", font=("Calibri",13, "normal"))
+
+
 while True:
     pantalla.update()
-
     mover() #siempre que se define algo se coloca al final
-
     time.sleep(0.1)
+
+    ultima_posicion = vibora.position() #guarda la posicion actual antes de mover
+
+    
+    if len(segmentos) >0:
+        ultimo_segmento = segmentos[-1]
+        nuevo_segmento.goto (ultimo_segmento.position())
+    else:
+        nuevo_segmento.goto(ultima_posicion)
+    segmentos.append(nuevo_segmento)
+
+    if vibora.distance(comida) <20:
+        nuevo_segmento = turtle.Turtle()
+        nuevo_segmento.speed(0) 
+        nuevo_segmento.shape("square") 
+        nuevo_segmento.color(color_serpiente)
+        nuevo_segmento.penup()
+
+        # Aumentar puntaje y nivel
+        puntaje += 10
+        actualizar_puntaje()
+
+
+
+        if puntaje % 50 == 0: # % resto 
+            nivel += 1
+            velocidad *= 1.2
+            actualizar_puntaje()
+
+        while True:
+            x = random.randint(-295, 295)
+            y = random.randint(-295, 295)
+            nueva_posicion = (x,y)
+            break
+
+
+
 
 
 
